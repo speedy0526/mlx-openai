@@ -35,7 +35,7 @@ class ChatCompletionRequest(BaseModel):
     model: str = Field(default="qwen3-4b", description="模型名称")
     messages: List[ChatMessage] = Field(..., description="消息列表")
     temperature: float = Field(default=1.0, ge=0.0, le=2.0, description="采样温度")
-    max_tokens: int = Field(default=512, ge=1, description="最大生成token数")
+    max_tokens: int = Field(default=81920, ge=1, description="最大生成token数")
     top_p: float = Field(default=0.9, ge=0.0, le=1.0, description="nucleus sampling参数")
     frequency_penalty: float = Field(default=0.0, ge=-2.0, le=2.0, description="频率惩罚")
     presence_penalty: float = Field(default=0.0, ge=-2.0, le=2.0, description="存在惩罚")
@@ -261,6 +261,11 @@ async def list_models():
                 id="qwen3-4b",
                 created=int(time.time()),
                 owned_by="mlx"
+            ),
+             ModelInfo(
+                id="yuntu-llm-2b",
+                created=int(time.time()),
+                owned_by="mlx"
             )
         ]
     )
@@ -269,7 +274,7 @@ async def list_models():
 @app.get("/v1/models/{model_id}")
 async def get_model(model_id: str):
     """获取指定模型信息"""
-    if model_id != "qwen3-4b":
+    if model_id  not in ["qwen3-4b","yuntu-llm-2b"]:
         raise HTTPException(status_code=404, detail="Model not found")
     
     import time
@@ -307,7 +312,7 @@ async def chat_completions(request: ChatCompletionRequest):
             prompt=prompt,
             max_tokens=request.max_tokens,
             sampler=sampler,
-            verbose=False
+            verbose=True
         )
         
         # 处理 think 标签（兼容 OpenAI reasoning API）
@@ -379,6 +384,7 @@ async def stream_chat_completions(request: ChatCompletionRequest):
     try:
         # 格式化消息为prompt
         prompt = format_messages(request.messages)
+        print(f"prompt:{prompt}")
         
         # 创建sampler
         sampler = make_sampler(

@@ -7,7 +7,7 @@ from openai import OpenAI
 
 # 配置客户端
 client = OpenAI(
-    base_url="http://localhost:8000/v1",  # MLX 服务地址
+    base_url="http://127.0.0.1:8000/v1",  # MLX 服务地址
     api_key="dummy-key",  # 可以是任意值，因为 MLX 服务不进行认证
 )
 
