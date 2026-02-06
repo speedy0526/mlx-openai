@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 # 全局模型和tokenizer
 model = None
 tokenizer = None
-model_path = "./models/qwen3-4b"
+model_path = "./models/qwen2-3b"
 
 
 # ==================== 数据模型 ====================
@@ -82,10 +82,10 @@ class Message(BaseModel):
 class MessageRequest(BaseModel):
     """Anthropic Messages API 请求"""
 
-    model: str = Field(default="qwen3-4b", description="模型名称")
+    model: str = Field(default="qwen2-3b", description="模型名称")
     messages: List[Message] = Field(..., description="消息列表")
     max_tokens: int = Field(default=16384, ge=1, description="最大生成token数")
-    temperature: float = Field(default=1.0, ge=0.0, description="采样温度")
+    temperature: float = Field(default=0.1, ge=0.0, description="采样温度")
     top_p: float = Field(default=0.9, ge=0.0, le=1.0, description="top_p采样")
     top_k: Optional[int] = Field(default=None, ge=0, description="top_k采样")
     stop_sequences: Optional[List[str]] = Field(default=None, description="停止序列")
@@ -524,7 +524,7 @@ async def list_models():
     return {
         "data": [
             {
-                "id": "qwen3-4b",
+                "id": "qwen2-3b",
                 "display_name": "Qwen3 4B",
                 "version": "1.0.0",
                 "created_at": "2025-01-01T00:00:00.000Z",
@@ -543,7 +543,7 @@ async def list_models():
 @app.get("/v1/models/{model_id}")
 async def get_model(model_id: str):
     """获取指定模型信息"""
-    available_models = ["qwen3-4b", "yuntu-llm-2b"]
+    available_models = ["qwen2-3b", "yuntu-llm-2b"]
 
     if model_id not in available_models:
         raise HTTPException(status_code=404, detail="Model not found")
