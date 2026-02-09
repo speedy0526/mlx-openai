@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 # 全局模型和tokenizer
 model = None
 tokenizer = None
-model_path = "./models/qwen3-8b"
+model_path = "./models/qwen2-7b"
 
 
 # ==================== 数据模型 ====================
@@ -45,7 +45,7 @@ class ChatMessage(BaseModel):
 class ChatCompletionRequest(BaseModel):
     """OpenAI Chat Completions API 请求"""
 
-    model: str = Field(default="qwen3-8b", description="模型名称")
+    model: str = Field(default="qwen2-7b", description="模型名称")
     messages: List[ChatMessage] = Field(..., description="消息列表")
     temperature: float = Field(default=1.0, ge=0.0, le=2.0, description="采样温度")
     max_tokens: int = Field(default=8192, ge=1, description="最大生成token数")
@@ -304,7 +304,7 @@ async def list_models():
     """列出可用模型（OpenAI风格）"""
     return ModelsResponse(
         data=[
-            ModelInfo(id="qwen3-8b", created=int(time.time()), owned_by="mlx"),
+            ModelInfo(id="qwen2-7b", created=int(time.time()), owned_by="mlx"),
             ModelInfo(id="yuntu-llm-2b", created=int(time.time()), owned_by="mlx"),
         ]
     )
@@ -313,7 +313,7 @@ async def list_models():
 @app.get("/v1/models/{model_id}")
 async def get_model(model_id: str):
     """获取指定模型信息"""
-    available_models = ["qwen3-8b", "yuntu-llm-2b"]
+    available_models = ["qwen2-7b", "yuntu-llm-2b"]
 
     if model_id not in available_models:
         raise HTTPException(status_code=404, detail="Model not found")
