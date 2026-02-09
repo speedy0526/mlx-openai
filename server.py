@@ -223,18 +223,8 @@ def format_messages(messages: List[ChatMessage]) -> str:
             chat_messages, add_generation_prompt=True, tokenize=False
         )
         return prompt
-    else:
-        # 回退到简单格式
-        prompt = ""
-        for msg in chat_messages:
-            if msg["role"] == "user":
-                prompt += f"User: {msg['content']}\n"
-            elif msg["role"] == "assistant":
-                prompt += f"Assistant: {msg['content']}\n"
-            elif msg["role"] == "system":
-                prompt += f"System: {msg['content']}\n"
-        prompt += "Assistant:"
-        return prompt
+    else: 
+        raise ValueError("tokenizer.chat_template is None")
 
 
 async def openai_stream_generator(

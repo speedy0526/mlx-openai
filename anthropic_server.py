@@ -332,17 +332,7 @@ def format_anthropic_messages(
         )
         return prompt
     else:
-        # 回退到简单格式
-        prompt = ""
-        for msg in chat_messages:
-            if msg["role"] == "user":
-                prompt += f"Human: {msg['content']}\n\n"
-            elif msg["role"] == "assistant":
-                prompt += f"Assistant: {msg['content']}\n\n"
-            elif msg["role"] == "system":
-                prompt += f"System: {msg['content']}\n\n"
-        prompt += "Assistant:"
-        return prompt
+        raise ValueError("tokenizer.chat_template is None")
 
 
 async def anthropic_stream_generator(
